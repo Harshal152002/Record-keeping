@@ -1,25 +1,61 @@
-import logo from './logo.svg';
-import './App.css';
+import Header from './Header';
+import TextField from '@mui/material/TextField';
+import Stack from '@mui/material/Stack';
+import Button from '@mui/material/Button';
+import {useState,createContext} from 'react';
+import Field from './Field'
+import Data from './Data'
 
-function App() {
+const harshal=createContext();
+function App () {
+  const [form, setForm] = useState ({});
+  const [data, setData] = useState ([]);
+  const invoke = () => {
+    setData ([...data, form]);
+    setForm({form})
+  };
+  
+ 
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="app">
+    <harshal.Provider value={{data,setData}}>
+      <Header />
+      <div className="form">
+        <Stack spacing={2} direction="row">
+          <TextField 
+            id="outlined-basic"
+            label="name"
+            variant="outlined"
+            onChange={(e) => {
+              setForm({...form,name:e.target.value})
+            }}
+          />
+          <TextField 
+            id="outlined-basic"
+            label="email"
+            variant="outlined"
+            onChange={e => {
+              setForm({...form,email:e.target.value});
+            }}
+          />
+          <Button onClick={invoke}  variant="contained" color="success">
+            ADD
+          </Button>
+        </Stack>
+      </div>
+      
+      <div className="data">
+        <Data/>
+        {data.map ((element, index) => {
+          return (
+           <Field key={index} name={element.name} email={element.email} index={index}/>
+          );
+        })}
+      </div>
+      </harshal.Provider>
     </div>
   );
 }
 
 export default App;
+export {harshal}
